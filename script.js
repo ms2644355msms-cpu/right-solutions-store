@@ -240,8 +240,7 @@ Please confirm availability and ordering details.`;
           <p class="category">${productCategory}</p>
           <h3>${productName}</h3>
           <p class="price">${product.price}</p>
-          <p>${productDescription}</p>
-          <a class="order-btn" href="${whatsappLink}" target="_blank">
+<p class="product-description">${productDescription}</p>          <a class="order-btn" href="${whatsappLink}" target="_blank">
             ${orderText}
           </a>
         </div>
