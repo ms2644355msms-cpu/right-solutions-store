@@ -74,6 +74,8 @@ function csvToProducts(csvText) {
         categoryAr: product.categoryAr || product.category || "",
         price: product.price || "",
         image: product.image || "",
+        image2: product.image2 || "",
+        image3: product.image3 || "",
         descriptionEn: product.descriptionEn || "",
         descriptionAr: product.descriptionAr || product.descriptionEn || ""
       };
@@ -82,6 +84,7 @@ function csvToProducts(csvText) {
 
 async function loadProductsFromSheet() {
   const container = document.getElementById("productsContainer");
+
   container.innerHTML = currentLanguage === "ar"
     ? "<p>جاري تحميل المنتجات...</p>"
     : "<p>Loading products...</p>";
@@ -114,6 +117,86 @@ async function loadProductsFromSheet() {
   }
 }
 
+function createProductSlider(product, productName, index) {
+  const images = [product.image, product.image2, product.image3]
+    .filter(img => img && img.trim() !== "");
+
+  if (images.length === 0) {
+    return `<div class="product-image-placeholder">${productName}</div>`;
+  }
+
+  const slides = images.map((img, imgIndex) => `
+    <img 
+      src="${img}" 
+      alt="${productName}" 
+      class="slider-image ${imgIndex === 0 ? "active" : ""}"
+    >
+  `).join("");
+
+  const dots = images.map((img, imgIndex) => `
+    <button 
+      class="slider-dot ${imgIndex === 0 ? "active" : ""}" 
+      onclick="showProductSlide(${index}, ${imgIndex})"
+      aria-label="Show image ${imgIndex + 1}">
+    </button>
+  `).join("");
+
+  const arrows = images.length > 1
+    ? `
+      <button class="slider-arrow slider-prev" onclick="changeProductSlide(${index}, -1)">‹</button>
+      <button class="slider-arrow slider-next" onclick="changeProductSlide(${index}, 1)">›</button>
+    `
+    : "";
+
+  return `
+    <div class="product-slider" data-slider-index="${index}" data-current-slide="0">
+      <div class="slider-images">
+        ${slides}
+        ${arrows}
+      </div>
+      <div class="slider-dots">
+        ${dots}
+      </div>
+    </div>
+  `;
+}
+
+function showProductSlide(sliderIndex, slideIndex) {
+  const slider = document.querySelector(`[data-slider-index="${sliderIndex}"]`);
+  if (!slider) return;
+
+  const images = slider.querySelectorAll(".slider-image");
+  const dots = slider.querySelectorAll(".slider-dot");
+
+  images.forEach(img => img.classList.remove("active"));
+  dots.forEach(dot => dot.classList.remove("active"));
+
+  if (images[slideIndex]) images[slideIndex].classList.add("active");
+  if (dots[slideIndex]) dots[slideIndex].classList.add("active");
+
+  slider.setAttribute("data-current-slide", slideIndex);
+}
+
+function changeProductSlide(sliderIndex, direction) {
+  const slider = document.querySelector(`[data-slider-index="${sliderIndex}"]`);
+  if (!slider) return;
+
+  const images = slider.querySelectorAll(".slider-image");
+  let currentSlide = Number(slider.getAttribute("data-current-slide")) || 0;
+
+  currentSlide += direction;
+
+  if (currentSlide < 0) {
+    currentSlide = images.length - 1;
+  }
+
+  if (currentSlide >= images.length) {
+    currentSlide = 0;
+  }
+
+  showProductSlide(sliderIndex, currentSlide);
+}
+
 function displayProducts(productList) {
   const container = document.getElementById("productsContainer");
   container.innerHTML = "";
@@ -125,7 +208,7 @@ function displayProducts(productList) {
     return;
   }
 
-  productList.forEach(product => {
+  productList.forEach((product, index) => {
     const productName = currentLanguage === "ar" ? product.nameAr : product.nameEn;
     const productCategory = currentLanguage === "ar" ? product.categoryAr : product.categoryEn;
     const productDescription = currentLanguage === "ar" ? product.descriptionAr : product.descriptionEn;
@@ -148,9 +231,7 @@ Please confirm availability and ordering details.`;
     const whatsappLink = makeWhatsappLink(message);
     const orderText = currentLanguage === "ar" ? "اطلب عبر واتساب" : "Order on WhatsApp";
 
-    const productImage = product.image
-      ? `<img src="${product.image}" alt="${productName}">`
-      : `<div class="product-image-placeholder">${productName}</div>`;
+    const productImage = createProductSlider(product, productName, index);
 
     const card = `
       <div class="product-card">
