@@ -334,6 +334,17 @@ body.ar .product-card {
   font-size: 16px;
 }
 
+.product-description {
+  white-space: pre-line;
+  line-height: 1.8;
+  background: #faf7ff;
+  border: 1px solid #efe1ff;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 10px;
+  color: #444;
+}
+
 .order-btn {
   display: inline-block;
   background: #25d366;
@@ -479,8 +490,4 @@ footer {
   .product-image-placeholder {
     height: 230px;
   }
-}
-.product-description {
-  white-space: pre-line;
-  line-height: 1.8;
 }
