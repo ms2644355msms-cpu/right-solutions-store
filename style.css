@@ -42,12 +42,11 @@ body.ar {
 }
 
 .logo-box img {
-  width: 120px;
-  height: 65px;
+  width: 180px;
+  height: auto;
   object-fit: contain;
   border-radius: 0;
 }
-
 .logo-box h2 {
   font-size: 28px;
   letter-spacing: 1px;
