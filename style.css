@@ -46,6 +46,8 @@ body.ar {
   height: auto;
   object-fit: contain;
   border-radius: 0;
+}.logo-box h2 {
+  display: none;
 }
 .logo-box h2 {
   font-size: 28px;
