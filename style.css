@@ -334,15 +334,48 @@ body.ar .product-card {
   font-size: 16px;
 }
 
-.product-description {
-  white-space: pre-line;
-  line-height: 1.8;
+/* Product description dropdown */
+.product-description-box {
+  margin: 12px 0 18px;
   background: #faf7ff;
   border: 1px solid #efe1ff;
   border-radius: 14px;
-  padding: 14px;
-  margin-top: 10px;
+  overflow: hidden;
+}
+
+.product-description-box summary {
+  cursor: pointer;
+  padding: 14px 16px;
+  color: #5b0099;
+  font-weight: bold;
+  font-size: 15px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.product-description-box summary::-webkit-details-marker {
+  display: none;
+}
+
+.product-description-box summary::after {
+  content: "▼";
+  font-size: 13px;
+  color: #ff3f9f;
+  transition: 0.3s;
+}
+
+.product-description-box[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.product-description {
+  white-space: pre-line;
+  line-height: 1.8;
   color: #444;
+  padding: 0 16px 16px;
+  font-size: 15px;
 }
 
 .order-btn {
