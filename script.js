@@ -1,4 +1,8 @@
 const whatsappNumber = "201025989869";
+
+const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS-Rn20O48Nh3XDJWNhZEMMpixS1yDDIWHqQIK9YN38_aEHDcMWdVJtjd1E6IHxDV8ZMQGWTHJqiCyD/pub?gid=0&single=true&output=csv";
+
+let products = [];
 let currentLanguage = "en";
 let currentCategory = "All";
 
@@ -6,9 +10,111 @@ function makeWhatsappLink(message) {
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
 
+function parseCSV(text) {
+  const rows = [];
+  let currentRow = [];
+  let currentValue = "";
+  let insideQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const nextChar = text[i + 1];
+
+    if (char === '"' && insideQuotes && nextChar === '"') {
+      currentValue += '"';
+      i++;
+    } else if (char === '"') {
+      insideQuotes = !insideQuotes;
+    } else if (char === "," && !insideQuotes) {
+      currentRow.push(currentValue);
+      currentValue = "";
+    } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+      if (currentValue || currentRow.length > 0) {
+        currentRow.push(currentValue);
+        rows.push(currentRow);
+        currentRow = [];
+        currentValue = "";
+      }
+    } else {
+      currentValue += char;
+    }
+  }
+
+  if (currentValue || currentRow.length > 0) {
+    currentRow.push(currentValue);
+    rows.push(currentRow);
+  }
+
+  return rows;
+}
+
+function csvToProducts(csvText) {
+  const rows = parseCSV(csvText);
+  const headers = rows[0].map(header => header.trim());
+
+  return rows.slice(1)
+    .filter(row => row.some(cell => cell && cell.trim() !== ""))
+    .map(row => {
+      const product = {};
+
+      headers.forEach((header, index) => {
+        product[header] = row[index] ? row[index].trim() : "";
+      });
+
+      return {
+        nameEn: product.nameEn || "",
+        nameAr: product.nameAr || "",
+        category: product.category || "",
+        categoryEn: product.categoryEn || product.category || "",
+        categoryAr: product.categoryAr || "",
+        price: product.price || "",
+        image: product.image || "",
+        descriptionEn: product.descriptionEn || "",
+        descriptionAr: product.descriptionAr || ""
+      };
+    });
+}
+
+async function loadProductsFromSheet() {
+  const container = document.getElementById("productsContainer");
+  container.innerHTML = "<p>Loading products...</p>";
+
+  try {
+    const response = await fetch(sheetCsvUrl);
+
+    if (!response.ok) {
+      throw new Error("Could not load sheet");
+    }
+
+    const csvText = await response.text();
+    products = csvToProducts(csvText);
+
+    if (products.length === 0) {
+      container.innerHTML = "<p>No products found.</p>";
+      return;
+    }
+
+    displayProducts(products);
+  } catch (error) {
+    container.innerHTML = `
+      <p style="color:red; font-weight:bold;">
+        Products could not be loaded. Please check the Google Sheet link.
+      </p>
+    `;
+    console.error(error);
+  }
+}
+
 function displayProducts(productList) {
   const container = document.getElementById("productsContainer");
   container.innerHTML = "";
+
+  if (!productList || productList.length === 0) {
+    container.innerHTML = currentLanguage === "ar"
+      ? "<p>لا توجد منتجات في هذا القسم.</p>"
+      : "<p>No products found in this category.</p>";
+    return;
+  }
 
   productList.forEach(product => {
     const productName = currentLanguage === "ar" ? product.nameAr : product.nameEn;
@@ -164,5 +270,5 @@ function toggleLanguage() {
   updateServiceLinks();
 }
 
-displayProducts(products);
+loadProductsFromSheet();
 updateServiceLinks();
