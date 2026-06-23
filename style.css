@@ -172,7 +172,7 @@ nav a:hover {
 .search-box input {
   width: 100%;
   max-width: 520px;
-  padding: 15px;
+  padding: 15px 20px;
   border: 2px solid #5b0099;
   border-radius: 30px;
   outline: none;
@@ -205,7 +205,7 @@ body.ar .product-card {
 
 .product-image-placeholder {
   width: 100%;
-  height: 210px;
+  height: 260px;
   background: linear-gradient(135deg, #5b0099, #ff3f9f);
   color: white;
   display: flex;
@@ -219,9 +219,13 @@ body.ar .product-card {
 
 .product-card img {
   width: 100%;
-  height: 210px;
-  object-fit: cover;
-  background: #eee;
+  height: 260px;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 18px 18px 0 0;
 }
 
 .product-info {
@@ -389,5 +393,10 @@ footer {
 
   .hero p {
     font-size: 17px;
+  }
+
+  .product-card img,
+  .product-image-placeholder {
+    height: 230px;
   }
 }
