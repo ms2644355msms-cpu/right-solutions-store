@@ -12,6 +12,7 @@ body {
   font-family: Arial, sans-serif;
   background: #f7f3ff;
   color: #222;
+  overflow-x: hidden;
 }
 
 body.ar {
@@ -24,44 +25,46 @@ body.ar {
   width: 100%;
   background: white;
   color: #5b0099;
-  padding: 12px 7%;
+  padding: 10px 7%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 1000;
-  gap: 15px;
+  gap: 20px;
   box-shadow: 0 4px 18px rgba(91, 0, 153, 0.12);
 }
 
-/* Code Logo */
 .logo-box {
+  flex: 0 0 50%;
+  max-width: 50%;
   display: flex;
   align-items: center;
-  gap: 14px;
 }
 
 .logo-box img {
-  width: 190px;
+  width: 300px;
+  max-width: 100%;
   height: auto;
-  object-fit: contain;
   display: block;
+  object-fit: contain;
 }
 
-
+nav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
 
 nav a {
   color: #5b0099;
   text-decoration: none;
-  margin-left: 18px;
   font-weight: bold;
   font-size: 14px;
-}
-
-body.ar nav a {
-  margin-left: 0;
-  margin-right: 18px;
 }
 
 nav a:hover {
@@ -358,30 +361,26 @@ footer {
 @media (max-width: 1000px) {
   .header {
     flex-direction: column;
-  }
-
-  nav {
-    text-align: center;
-  }
-
-  nav a,
-  body.ar nav a {
-    display: inline-block;
-    margin: 7px;
+    padding: 12px 5%;
   }
 
   .logo-box {
+    flex: none;
+    max-width: 100%;
     justify-content: center;
-    min-width: auto;
   }
 
-  .brand-text strong {
-    font-size: 26px;
+  .logo-box img {
+    width: 260px;
   }
 
-  .brand-text small {
-    font-size: 11px;
-    letter-spacing: 5px;
+  nav {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  nav a {
+    font-size: 13px;
   }
 
   .hero h1 {
