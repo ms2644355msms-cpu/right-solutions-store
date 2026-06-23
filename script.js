@@ -50,6 +50,11 @@ function parseCSV(text) {
 
 function csvToProducts(csvText) {
   const rows = parseCSV(csvText);
+
+  if (!rows || rows.length < 2) {
+    return [];
+  }
+
   const headers = rows[0].map(header => header.trim());
 
   return rows.slice(1)
@@ -63,21 +68,23 @@ function csvToProducts(csvText) {
 
       return {
         nameEn: product.nameEn || "",
-        nameAr: product.nameAr || "",
+        nameAr: product.nameAr || product.nameEn || "",
         category: product.category || "",
         categoryEn: product.categoryEn || product.category || "",
-        categoryAr: product.categoryAr || "",
+        categoryAr: product.categoryAr || product.category || "",
         price: product.price || "",
         image: product.image || "",
         descriptionEn: product.descriptionEn || "",
-        descriptionAr: product.descriptionAr || ""
+        descriptionAr: product.descriptionAr || product.descriptionEn || ""
       };
     });
 }
 
 async function loadProductsFromSheet() {
   const container = document.getElementById("productsContainer");
-  container.innerHTML = "<p>Loading products...</p>";
+  container.innerHTML = currentLanguage === "ar"
+    ? "<p>جاري تحميل المنتجات...</p>"
+    : "<p>Loading products...</p>";
 
   try {
     const response = await fetch(sheetCsvUrl);
@@ -90,7 +97,9 @@ async function loadProductsFromSheet() {
     products = csvToProducts(csvText);
 
     if (products.length === 0) {
-      container.innerHTML = "<p>No products found.</p>";
+      container.innerHTML = currentLanguage === "ar"
+        ? "<p>لا توجد منتجات حاليًا.</p>"
+        : "<p>No products found.</p>";
       return;
     }
 
@@ -174,7 +183,8 @@ function filterProducts(category) {
 }
 
 function searchProducts() {
-  const searchValue = document.getElementById("searchInput").value.toLowerCase();
+  const searchInput = document.getElementById("searchInput");
+  const searchValue = searchInput.value.toLowerCase();
 
   const filtered = products.filter(product => {
     const name = currentLanguage === "ar" ? product.nameAr : product.nameEn;
