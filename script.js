@@ -48,6 +48,27 @@ function parseCSV(text) {
   return rows;
 }
 
+function formatDescription(text) {
+  if (!text) return "";
+
+  return text
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .replace(/Brand:/g, "\nBrand:")
+    .replace(/Model:/g, "\nModel:")
+    .replace(/Screen Size:/g, "\nScreen Size:")
+    .replace(/Color:/g, "\nColor:")
+    .replace(/Storage:/g, "\nStorage:")
+    .replace(/Processor:/g, "\nProcessor:")
+    .replace(/CPU Model:/g, "\nProcessor:")
+    .replace(/RAM:/g, "\nRAM:")
+    .replace(/Operating System:/g, "\nOperating System:")
+    .replace(/Special Features:/g, "\nSpecial Features:")
+    .replace(/Graphics:/g, "\nGraphics:")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 function csvToProducts(csvText) {
   const rows = parseCSV(csvText);
 
@@ -76,8 +97,8 @@ function csvToProducts(csvText) {
         image: product.image || "",
         image2: product.image2 || "",
         image3: product.image3 || "",
-        descriptionEn: product.descriptionEn || "",
-        descriptionAr: product.descriptionAr || product.descriptionEn || ""
+        descriptionEn: formatDescription(product.descriptionEn || ""),
+        descriptionAr: formatDescription(product.descriptionAr || product.descriptionEn || "")
       };
     });
 }
@@ -240,7 +261,8 @@ Please confirm availability and ordering details.`;
           <p class="category">${productCategory}</p>
           <h3>${productName}</h3>
           <p class="price">${product.price}</p>
-<p class="product-description">${productDescription}</p>          <a class="order-btn" href="${whatsappLink}" target="_blank">
+          <p class="product-description">${productDescription}</p>
+          <a class="order-btn" href="${whatsappLink}" target="_blank">
             ${orderText}
           </a>
         </div>
