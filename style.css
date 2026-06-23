@@ -480,3 +480,7 @@ footer {
     height: 230px;
   }
 }
+.product-description {
+  white-space: pre-line;
+  line-height: 1.8;
+}
