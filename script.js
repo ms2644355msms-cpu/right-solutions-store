@@ -251,6 +251,7 @@ Please confirm availability and ordering details.`;
 
     const whatsappLink = makeWhatsappLink(message);
     const orderText = currentLanguage === "ar" ? "اطلب عبر واتساب" : "Order on WhatsApp";
+    const descriptionTitle = currentLanguage === "ar" ? "عرض الوصف والمواصفات" : "View Description & Specs";
 
     const productImage = createProductSlider(product, productName, index);
 
@@ -261,7 +262,14 @@ Please confirm availability and ordering details.`;
           <p class="category">${productCategory}</p>
           <h3>${productName}</h3>
           <p class="price">${product.price}</p>
-          <p class="product-description">${productDescription}</p>
+
+          <details class="product-description-box">
+            <summary>${descriptionTitle}</summary>
+            <div class="product-description">
+              ${productDescription}
+            </div>
+          </details>
+
           <a class="order-btn" href="${whatsappLink}" target="_blank">
             ${orderText}
           </a>
